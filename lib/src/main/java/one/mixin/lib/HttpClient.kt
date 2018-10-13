@@ -9,7 +9,6 @@ import one.mixin.lib.Constants.API.URL
 import one.mixin.lib.api.AssetService
 import one.mixin.lib.api.UserService
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -81,7 +80,6 @@ class HttpClient(private val tokenInfo: TokenInfo) {
   private val retrofit: Retrofit by lazy {
     val builder = Retrofit.Builder()
         .baseUrl(URL)
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .client(okHttpClient)
     builder.build()

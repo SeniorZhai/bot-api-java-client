@@ -74,11 +74,12 @@ class MainActivity : AppCompatActivity() {
       clearAddress()
       val sessionKey = generateRSAKeyPair()
       val sessionSecret = Base64.encodeBytes(sessionKey.getPublicKey())
-      client.userService.createUsersRx(
-          AccountRequest("User${Random().nextInt(100)}", sessionSecret))
+      getObservable(client.userService.createUsers(
+          AccountRequest("User${Random().nextInt(100)}", sessionSecret)))
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread()).subscribe({ response ->
             if (response.isSuccess) {
+              val userPrivateKey = sessionKey.getPrivateKeyPem()
               content.text = "${response.data}\n$userPrivateKey"
               saveUser(response.data!!, sessionKey)
             } else {
@@ -92,8 +93,8 @@ class MainActivity : AppCompatActivity() {
       if (currentUser == null || userIterator == null || userAesKey == null) {
         toast("no currentUser")
       } else {
-        client.userService.createPinRx(
-            PinRequest(encryptPin(userIterator!!, userAesKey!!, "131416")!!))
+        getObservable(client.userService.createPin(
+            PinRequest(encryptPin(userIterator!!, userAesKey!!, "131416")!!)))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
               if (it.isSuccess) {
@@ -111,8 +112,8 @@ class MainActivity : AppCompatActivity() {
       if (currentUser == null || userIterator == null || userAesKey == null) {
         toast("no currentUser")
       } else {
-        client.userService.pinVerifyRx(
-            PinRequest(encryptPin(userIterator!!, userAesKey!!, "131416")!!))
+        getObservable(client.userService.pinVerify(
+            PinRequest(encryptPin(userIterator!!, userAesKey!!, "131416")!!)))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
               if (it.isSuccess) {
@@ -126,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     getDeposit.setOnClickListener {
       // CNB
-      client.assetService.getDepositRx("965e5c6e-434c-3fa9-b780-c50f43cd955c")
+      getObservable(client.assetService.getDeposit("965e5c6e-434c-3fa9-b780-c50f43cd955c"))
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread()).subscribe({
             if (it.isSuccess) {
@@ -143,11 +144,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     addAddress.setOnClickListener {
-      client.assetService.createAddressesRx(AddressesRequest(
+      getObservable(client.assetService.createAddresses(AddressesRequest(
           "965e5c6e-434c-3fa9-b780-c50f43cd955c",
           "0x45315C1Fd776AF95898C77829f027AFc578f9C2B",
           "CNB address",
-          encryptPin(userIterator!!, userAesKey!!, "131416")!!))
+          encryptPin(userIterator!!, userAesKey!!, "131416")!!)))
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread()).subscribe({
             if (it.isSuccess) {
@@ -166,13 +167,13 @@ class MainActivity : AppCompatActivity() {
       if (addressId == null) {
         toast("Please add address")
       } else {
-        client.assetService.withdrawalsRx(WithdrawalRequest(
+        getObservable(client.assetService.withdrawals(WithdrawalRequest(
             addressId,
             "4.9",
             encryptPin(userIterator!!, userAesKey!!, "131416")!!,
             UUID.randomUUID().toString(),
             "memo"
-        )).subscribeOn(Schedulers.io())
+        ))).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe({
               if (it.isSuccess) {
                 toast("withdrawal success")
@@ -215,12 +216,12 @@ class MainActivity : AppCompatActivity() {
   }
 
   private fun saveUser(user: User, sessionKey: KeyPair) {
-    currentUser = user
     userPrivateKey = sessionKey.getPrivateKeyPem()
     defaultSharedPreferences.edit().putString(PREF_USER,
         Gson().toJson(user)).apply()
     defaultSharedPreferences.edit().putString(PREF_USER_PRIVATE_KEY,
         sessionKey.getPrivateKeyPem()).apply()
+    currentUser = user
     client.setUserInfo(
         TokenInfo(currentUser!!.userId, currentUser!!.sessionId, userPrivateKey!!))
   }
