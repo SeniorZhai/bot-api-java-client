@@ -4,7 +4,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import one.mixin.bot.ClientErrorException
 import one.mixin.bot.ServerErrorException
-import one.mixin.bot.signToken
 import one.mixin.lib.Constants.API.URL
 import one.mixin.lib.api.AssetService
 import one.mixin.lib.api.UserService

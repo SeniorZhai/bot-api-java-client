@@ -16,18 +16,18 @@ import kotlinx.android.synthetic.main.activity_main.getDeposit
 import kotlinx.android.synthetic.main.activity_main.qr_code
 import kotlinx.android.synthetic.main.activity_main.verfiy
 import kotlinx.android.synthetic.main.activity_main.withdrawal
-import one.mixin.bot.encryptPin
-import one.mixin.bot.generateRSAKeyPair
-import one.mixin.bot.getPrivateKeyPem
-import one.mixin.bot.getPublicKey
-import one.mixin.bot.getRSAPrivateKeyFromString
-import one.mixin.bot.rsaDecrypt
 import one.mixin.example.SecretKey.Account.PREF_USER
 import one.mixin.example.SecretKey.Account.PREF_USER_ADDRESS_ID
 import one.mixin.example.SecretKey.Account.PREF_USER_PRIVATE_KEY
 import one.mixin.lib.HttpClient
 import one.mixin.lib.HttpClient.TokenInfo
+import one.mixin.lib.encryptPin
 import one.mixin.lib.util.Base64
+import one.mixin.lib.util.generateRSAKeyPair
+import one.mixin.lib.util.getPrivateKeyPem
+import one.mixin.lib.util.getPublicKey
+import one.mixin.lib.util.getRSAPrivateKeyFromString
+import one.mixin.lib.util.rsaDecrypt
 import one.mixin.lib.vo.AccountRequest
 import one.mixin.lib.vo.AddressesRequest
 import one.mixin.lib.vo.PinRequest
@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
   @SuppressLint("SetTextI18n", "CommitPrefEdits")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    
     setContentView(R.layout.activity_main)
     loadOldUser()
     create.setOnClickListener {

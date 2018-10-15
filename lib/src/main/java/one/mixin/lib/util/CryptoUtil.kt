@@ -1,6 +1,6 @@
-package one.mixin.bot
+@file:JvmName("CryptoUtils")
+package one.mixin.lib.util
 
-import one.mixin.lib.util.Base64
 import org.spongycastle.asn1.pkcs.PrivateKeyInfo
 import org.spongycastle.util.io.pem.PemObject
 import org.spongycastle.util.io.pem.PemWriter
@@ -17,7 +17,6 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.OAEPParameterSpec
 import javax.crypto.spec.PSource.PSpecified
 import javax.crypto.spec.SecretKeySpec
-
 
 fun generateRSAKeyPair(keyLength: Int = 1024): KeyPair {
   val kpg = KeyPairGenerator.getInstance("RSA")
